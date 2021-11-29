@@ -1,6 +1,5 @@
 package cn.com.agree.abs.design.sigleton;
 
-import sun.security.jca.GetInstance;
 
 /**
  * 饿汉 线程安全
