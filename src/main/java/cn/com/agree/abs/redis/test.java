@@ -13,17 +13,27 @@ import java.time.Duration;
  * @date 2022-03-09 16:48
  */
 public class test {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException, IOException {
         RedissonConfig redissonConfig = new RedissonConfig();
-        long expireTime = 123000;
+        RedissonClient redisson=null;
         try {
-            RedissonClient redisson = redissonConfig.redisson();
-            RMap<String, String> test = redisson.getMap("test");
-            boolean expire = test.expire(Duration.ofMillis(expireTime));
-        } catch (IOException e) {
-            e.printStackTrace();
+            redisson = redissonConfig.redisson();
+            dofor(redisson);
+        } catch (InterruptedException e) {
+           dofor(redisson);
         }
+    }
 
-
+    private static void dofor(RedissonClient redisson) throws InterruptedException {
+        while (true){
+            Thread.sleep(1000);
+            RMap<String, String> test = redisson.getMap("test");
+            System.out.println(test.keySet());
+            final String adf = test.get("adf");
+            System.out.println(adf);
+            boolean expire = test.expire(Duration.ofMillis(12345));
+            System.out.println(expire);
+            System.out.println("-------------------------------------------------------");
+        }
     }
 }

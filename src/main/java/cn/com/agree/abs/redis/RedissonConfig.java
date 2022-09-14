@@ -3,8 +3,8 @@ package cn.com.agree.abs.redis;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
-import org.redisson.config.ClusterServersConfig;
 import org.redisson.config.Config;
+import org.redisson.config.SentinelServersConfig;
 
 import java.io.IOException;
 
@@ -20,9 +20,10 @@ public class RedissonConfig {
     public RedissonClient redisson() throws IOException {
         // 本例子使用的是yaml格式的配置文件，读取使用Config.fromYAML，如果是Json文件，则使用Config.fromJSON
         Config config = new Config();
-
-        ClusterServersConfig csc = config.useClusterServers()
-                .addNodeAddress("redis://101.43.143.184:9001", "redis://101.43.143.184:9002", "redis://101.43.143.184:9003", "redis://101.43.143.184:9004", "redis://101.43.143.184:9005", "redis://101.43.143.184:9006")
+        SentinelServersConfig csc = config.useSentinelServers()
+                .addSentinelAddress("redis://192.9.200.183:26379","redis://192.9.200.183:26380","redis://192.9.200.183:26381")
+                .setMasterName("mymaster")
+                .setPassword("foobared")
                 .setConnectTimeout(2000)
                 .setTimeout(2000)
                 .setMasterConnectionMinimumIdleSize(36)

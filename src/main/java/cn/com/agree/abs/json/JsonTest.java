@@ -8,6 +8,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class JsonTest {
 
@@ -15,7 +16,7 @@ public class JsonTest {
         jsonTest01();
     }
 
-    static void jsonTest01() {
+    public static void jsonTest01() {
         //关闭json对循环依赖的处理
         JSON.DEFAULT_GENERATE_FEATURE |= SerializerFeature.DisableCircularReferenceDetect.getMask();
 
@@ -27,16 +28,16 @@ public class JsonTest {
         A a = new A(b);
         d.setA(a);
         Map<Object, Object> hashMap = new HashMap<>();
-        hashMap.put(a,a);
+        hashMap.put(a, a);
         //普通对象转json对象
         String s = JSON.toJSONString(hashMap, 3089);
         Object resObj = JSON.parse(s);
 
 
         ArrayList<Integer> objectCache = new ArrayList<>();
-        Object desensitive = desensitive(resObj, objectCache);
+//        Object desensitive = desensitive(resObj, objectCache);
 
-        System.out.println(JSON.toJSONString(desensitive,3089));
+//        System.out.println(JSON.toJSONString(desensitive,3089));
 
     }
 
@@ -81,7 +82,7 @@ public class JsonTest {
         }
     }
 
-    static class D{
+    static class D {
         private A a;
 
         public A getA() {
@@ -99,10 +100,10 @@ public class JsonTest {
      * @param object 要脱敏的对象
      * @return
      */
-    private static Object desensitive(Object object, ArrayList<Integer> objectCache) {
+    public Object desensitive(Object object, ArrayList<Integer> objectCache) {
 
         int objID = System.identityHashCode(object);
-        if (objectCache.contains(objID)){
+        if (objectCache.contains(objID)) {
             return object;
         }
 
@@ -139,5 +140,12 @@ public class JsonTest {
 
         // 对象无法解析为JSON对象,则直接返回
         return object;
+    }
+
+
+
+    public void sout(AtomicInteger i) {
+        System.out.println("已执行JsonTest的sout方法-----------------------" + i.getAndAdd(1));
+
     }
 }
